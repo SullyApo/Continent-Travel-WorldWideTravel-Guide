@@ -1,0 +1,118 @@
+version: "3.1"
+
+intents:
+  - chercher_voyage
+  - demander_infos_destination
+  - comparer_destinations
+  - demander_conseils_pratiques
+  - rechercher_hebergement
+  - demander_transports
+  - budget_voyage
+  - voyages_thematiques
+  - questions_urgences
+  - avis_recommandations
+  - restrictions_voyage
+  - nlu_fallback
+
+entities:
+  - date
+  - saison
+  - duree
+  - destination
+  - destination1
+  - destination2
+  - nombre
+  - devise
+  - service
+  - compagnie
+  - theme
+  - from
+  - to
+
+slots:
+  destination:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: destination
+      synonyms:
+        "NYC": "New York"
+        "BKK": "Bangkok"
+  
+  date:
+    type: text
+    mappings:  
+    - type: from_entity
+      entity: date
+
+
+  duree:
+    type: text
+    mappings:  
+    - type: from_entity
+      entity: duree
+  
+  theme:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: theme
+  
+  
+  budget:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: budget
+    description: "Budget du voyage (ex: 500€, 1000 USD)."
+
+responses:
+  utter_proposer_destinations:
+  - text: "Je te recommande {destinations}. Budget {budget} ? Durée {duree} ?"
+  
+  utter_demander_details:
+    - text: "Pour quelle date envisages-tu ce voyage ?"
+    - text: "Sur quelle période ?"
+
+  utter_confirmer_hebergement:
+    - text: "Je cherche des hébergements à {destination} pour {nombre} personnes. Un instant..."
+
+  utter_transports_disponibles:
+    - text: "Voici les options de transport pour {destination} : {transports}"
+
+  utter_default:
+  - text: "Je n'ai pas compris, pouvez-vous reformuler ?"
+  
+  utter_ask_rephrase:
+  - text: "Pouvez-vous préciser votre demande ?"
+
+  utter_confirmation_urgence:
+    - text: "Voici les informations d'urgence pour {destination}: {infos_urgences}"
+  
+  utter_ask_follow_up:
+    - text: "Souhaites-tu d'autres informations sur {destination} ?"
+  
+  utter_ask_budget_details:  
+    - text: "Quel est votre budget approximatif pour ce voyage ?"
+  
+  utter_ask_clarification:
+    - text: "Pouvez-vous préciser votre demande ? Je n'ai pas bien compris."
+    - text: "Voulez-vous parler de destinations, d'hébergements, ou d'autre chose ?"
+    - text: "Je ne suis pas sûr de ce que vous cherchez. Pouvez-vous reformuler ?"
+
+actions:
+  - action_proposer_destinations
+  - action_rechercher_hebergement
+  - action_infos_destination
+  - action_comparer_destinations
+  - action_verifier_restrictions
+  - action_gerer_urgences
+  - action_demander_conseils_pratiques
+  - action_validate_budget 
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+synonyms:
+  - vacances: ["voyage", "séjour", "escapade"]
