@@ -1,0 +1,96 @@
+📁 assets/styles/style.css
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Conteneur principal */
+.stApp {
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* En-tête */
+.st-emotion-cache-1avcm0n {
+    background-color: #2c3e50 !important;
+}
+
+/* Barre latérale */
+[data-testid="stSidebar"] {
+    background-color: #34495e !important;
+    color: white;
+}
+
+/* Boutons */
+.stButton>button {
+    background-color: #3498db;
+    color: white;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border: none;
+    transition: all 0.3s;
+}
+
+.stButton>button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Champs de saisie */
+.stTextInput>div>div>input, 
+.stTextArea>div>div>textarea {
+    border-radius: 8px !important;
+    padding: 10px !important;
+    border: 1px solid #ddd !important;
+}
+
+/* Message chat - Utilisateur */
+.stChatMessage.user {
+    background-color: #e3f2fd;
+    border-radius: 15px 15px 0 15px;
+    padding: 12px;
+    margin: 5px 0;
+    max-width: 80%;
+    margin-left: auto;
+}
+
+/* Message chat - Bot */
+.stChatMessage.assistant {
+    background-color: #f1f1f1;
+    border-radius: 15px 15px 15px 0;
+    padding: 12px;
+    margin: 5px 0;
+    max-width: 80%;
+    margin-right: auto;
+}
+
+/* Onglets */
+.stTabs [role="tablist"] button {
+    color: #2c3e50 !important;
+}
+
+.stTabs [aria-selected="true"] {
+    border-bottom: 3px solid #3498db !important;
+    color: #3498db !important;
+    font-weight: bold;
+}
+
+/* Avatar du bot */
+.stChatMessage.assistant img {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] {
+        width: 200px !important;
+    }
+}

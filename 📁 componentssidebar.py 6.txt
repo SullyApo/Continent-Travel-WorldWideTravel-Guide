@@ -1,0 +1,33 @@
+📁 components/sidebar.py
+
+import streamlit as st
+from services.utils.session import get_session, clear_session
+
+def sidebar():
+    with st.sidebar:
+        st.image("assets/images/logo.png", width=150)
+        
+        if st.session_state.get('authenticated'):
+            user = get_session('user')
+            st.write(f"Bonjour, **{user.get('name', 'Utilisateur')}**")
+            
+            if st.button("Déconnexion"):
+                clear_session()
+                st.rerun()
+            
+            st.markdown("---")
+            st.markdown("### Paramètres")
+            use_rasa = st.checkbox(
+                "Connexion directe à Rasa", 
+                value=st.session_state.get('use_rasa_directly', False),
+                key="rasa_direct_toggle"
+            )
+            st.session_state.use_rasa_directly = use_rasa
+            
+            st.markdown("---")
+            st.markdown("### Aide")
+            st.button("Guide d'utilisation")
+            st.button("Contactez le support")
+        else:
+            st.markdown("### Chatbot de Voyage")
+            st.markdown("Connectez-vous pour discuter avec notre chatbot intelligent de voyage.")

@@ -1,0 +1,66 @@
+📁 services/database/chat_db.py
+
+import json
+import os
+from pathlib import Path
+from datetime import datetime
+from uuid import uuid4
+from models.chat import ChatSession, ChatMessage
+
+DB_PATH = Path("local_db/chat_db.json")
+
+class ChatDB:
+    def __init__(self):
+        self._ensure_db_exists()
+    
+    def _ensure_db_exists(self):
+        os.makedirs(DB_PATH.parent, exist_ok=True)
+        if not DB_PATH.exists():
+            with open(DB_PATH, 'w') as f:
+                json.dump({"sessions": []}, f)
+    
+    def get_user_sessions(self, user_id: str) -> list[ChatSession]:
+        with open(DB_PATH, 'r') as f:
+            data = json.load(f)
+        
+        return [
+            ChatSession.from_dict(session_data)
+            for session_data in data["sessions"]
+            if session_data["user_id"] == user_id
+        ]
+    
+    def add_message(self, user_id: str, message: str, is_bot: bool = False) -> ChatMessage:
+        with open(DB_PATH, 'r') as f:
+            data = json.load(f)
+        
+        # Trouver ou créer une session
+        session = None
+        for s in data["sessions"]:
+            if s["user_id"] == user_id and not s.get("ended"):
+                session = s
+                break
+        
+        if not session:
+            session = {
+                "id": str(uuid4()),
+                "user_id": user_id,
+                "created_at": datetime.now().isoformat(),
+                "messages": [],
+                "ended": False
+            }
+            data["sessions"].append(session)
+        
+        # Ajouter un message
+        new_message = {
+            "id": str(uuid4()),
+            "content": message,
+            "sender": "bot" if is_bot else "user",
+            "timestamp": datetime.now().isoformat(),
+            "metadata": {}
+        }
+        session["messages"].append(new_message)
+        
+        with open(DB_PATH, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        return ChatMessage.from_dict(new_message)

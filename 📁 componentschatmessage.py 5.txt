@@ -1,0 +1,46 @@
+📁 components/chat/message.py
+
+import streamlit as st
+import time
+from services.api.chat import send_message_to_backend
+from services.api.rasa import send_to_rasa
+from components.chat.suggestions import show_suggestions
+from components.chat.history import load_chat_history
+
+def chat_interface():
+    st.title("Chatbot de Voyage")
+    
+    # Charger l'historique du chat
+    chat_history = load_chat_history()
+    
+    # Afficher l'historique
+    for message in chat_history:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    # Saisie d'un nouveau message
+    if prompt := st.chat_input("Posez votre question sur le voyage..."):
+        # Afficher le message de l'utilisateur
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # Ajouter à l'historique
+        chat_history.append({"role": "user", "content": prompt})
+        
+        # Envoyer au backend/Rasa
+        with st.spinner("Le chatbot répond..."):
+            # Choix d'envoi direct à Rasa ou au backend
+            if st.session_state.get('use_rasa_directly'):
+                response = send_to_rasa(prompt)
+            else:
+                response = send_message_to_backend(prompt)
+            
+            # Afficher la réponse
+            with st.chat_message("assistant", avatar="assets/images/bot_avatar.png"):
+                st.markdown(response)
+            
+            # Ajouter à l'historique
+            chat_history.append({"role": "assistant", "content": response})
+    
+    # Afficher des suggestions
+    show_suggestions()
