@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=./schemas/rules-3.1.schema.json  # Chemin relatif corrigé
+
+version: "3.1"
+
+rules:
+  - rule: Infos destination
+    steps:
+    - intent: demander_infos_destination
+    - action: action_infos_destination
+
+  - rule: Comparaison
+    steps:
+    - intent: comparer_destinations
+    - action: action_comparer_destinations
+
+  - rule: Hébergement
+    steps:
+    - intent: rechercher_hebergement
+    - action: utter_confirmer_hebergement
+
+  - rule: Clarifier intention ambiguë
+    steps:
+    - intent: affirm  # Clé obligatoire
+      confidence: < 0.7  # Clé obligatoire
+    - action: utter_ask_clarification
+    - active_loop: null
+
+  - rule: Gestion des requêtes voyage
+    condition:
+    - intent: nlu_fallback  # Clé obligatoire
+    - slot_was_set:
+      - entity: date
+    steps:
+    - action: action_proposer_destinations
+
+  - rule: Gestion budget
+    steps:
+    - intent: budget_voyage
+    - action: action_proposer_destinations

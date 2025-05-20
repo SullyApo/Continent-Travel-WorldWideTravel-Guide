@@ -1,0 +1,50 @@
+version: "3.1"
+
+stories:
+- story: Proposer des destinations
+  steps:
+    - intent: chercher_voyage
+    - action: action_proposer_destinations
+    - action: utter_proposer_destinations
+
+- story: Demande d'informations sur une destination
+  steps:
+    - intent: demander_infos_destination
+    - action: action_infos_destination
+    - action: utter_ask_follow_up
+
+- story: Comparaison de destinations
+  steps:
+    - intent: comparer_destinations
+    - action: action_comparer_destinations
+
+- story: Recherche d'hébergement
+  steps:
+    - intent: rechercher_hebergement
+    - action: action_rechercher_hebergement
+    - action: utter_confirmer_hebergement
+
+- story: Urgences voyage
+  steps:
+    - intent: questions_urgences
+    - action: action_gerer_urgences  # Nouvelle action à créer
+    - action: utter_confirmation_urgence
+
+- story: Conseils pratiques
+  steps:
+    - intent: demander_conseils_pratiques
+    - action: action_demander_conseils_pratiques
+    - action: utter_transports_disponibles
+
+- story: Restrictions voyage
+  steps:
+    - intent: restrictions_voyage
+    - action: action_verifier_restrictions
+    - action: utter_default
+
+- story: Budget voyage (nouvelle)
+  steps:
+    - intent: budget_voyage
+    - action: utter_ask_budget_details
+    - action: action_proposer_destinations   
+

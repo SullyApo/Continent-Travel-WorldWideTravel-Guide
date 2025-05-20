@@ -1,0 +1,168 @@
+version: "3.1"
+
+nlu:
+- intent: chercher_voyage
+  examples: |
+    - Je veux partir en vacances, des idées ?
+    - Je recherche une destination de vacances
+    - Où pourrais-je voyager cet été ?
+    - Pouvez-vous me suggérer un lieu pour mes vacances ?
+    - J'ai besoin de suggestions de voyage
+    - Quelles destinations me conseillez-vous ?
+    - Je souhaite organiser un voyage
+    - Aidez-moi à trouver une destination
+    - Où partir en vacances en famille ?
+    - Je veux m'évader, où aller ?
+    - Besoin d'inspiration pour mon prochain voyage
+    - Quels sont les endroits à visiter actuellement ?
+    - Je planifie mes vacances, avez-vous des recommandations ?
+    - Où voyager avec un petit budget ?
+    - Destination romantique pour un couple
+    - Lieux insolites à découvrir cette année
+    - Où partir en [juin](date) ?
+    - Je cherche une destination [ensoleillée](theme)
+    - Voyage [détente](theme) à recommander ?
+    - Où aller pour des vacances [culturelles](theme) ?
+    - Où partir en [juillet](date) ?
+    - Recommandez-moi une destination [exotique](theme)
+    - Je veux voyager mais je ne sais pas où aller
+    - Quels sont les bons plans voyage cette année ?
+    - Destination [romantique](theme) pour un weekend
+    - Où aller en [automne](theme) ?
+    - Je cherche une destination pour mes vacances
+    - Où partir en [été](theme) ?
+    - Recommandez-moi un lieu de vacances
+    - Je veux voyager mais je ne sais pas où
+    - Besoin d'idées pour un voyage en [famille](theme)
+    - Quelles sont les destinations tendances ?
+    - Je souhaite découvrir un nouveau pays
+
+- intent: demander_infos_destination
+  examples: |
+    - Que visiter en [3 jours](duree) à [Lisbonne](destination) ?
+    - C'est dangereux de voyager en [Colombie](destination) ?
+    - Quelles spécialités manger à [Tokyo](destination) ?
+    - Y a-t-il des festivals en [août](date) à [Barcelone](destination) ?
+    - Où sortir le soir à [Berlin](destination) ?
+    - Avez-vous un itinéraire pour [5 jours](duree) en [Italie](destination) ?
+    - Quels quartiers éviter à [Rio](destination) ?
+    - Où voir des aurores boréales en [Islande](destination) ?
+    - Est-ce que [Marrakech](destination) est adapté aux enfants ?
+    - "Que faire à [Paris](destination) ?"  # Sans durée
+    - "C'est comment [Bali](destination) ?" # Question ouverte
+    - Quoi visiter à Paris ?
+
+
+
+- intent: comparer_destinations
+  examples: |
+    - Mieux entre [Sicile](destination1) et [Sardaigne](destination2) pour la plage ?
+    - [Norvège](destination1) ou [Finlande](destination2) pour voir des aurores boréales ?
+    - Quelle ville visiter : [Kyoto](destination1) ou [Osaka](destination2) ?
+    - [Costa Rica](destination1) vs [Panama](destination2) pour l'écotourisme ?
+
+- intent: demander_conseils_pratiques
+  examples: |
+    - Faut-il un adaptateur pour [Australie](destination) ?
+    - Comment éviter le décalage horaire pour [New York](destination) ?
+    - Puis-je boire l'eau du robinet en [Inde](destination) ?
+    - Quel forfait mobile prendre pour [l'Europe](destination) ?
+    - Comment convertir des [dollars](devise) en euros ?
+    - Où changer de l'argent à [Bangkok](destination) ?
+    - Est-ce que [Uber](service) existe à [Bali](destination) ?
+
+- intent: rechercher_hebergement
+  examples: |
+    - Trouver un hôtel avec piscine à [Dubai](destination)
+    - Auberge de jeunesse recommandée à [Prague](destination)
+    - Location de villa en [Grèce](destination) pour [8 personnes](nombre)
+    - Hôtel luxe pas cher à [Paris](destination)
+    - Camping près du [Mont-Saint-Michel](destination)
+    - Réservation en last minute à [Amsterdam](destination)
+    - Trouver un hôtel [pas cher](theme) à [Lisbonne](destination)
+    - Camping pour [4](nombre) près de [Bordeaux](destination)
+
+- intent: demander_transports
+  examples: |
+    - Louer une voiture à [Madrid](destination), c'est facile ?
+    - Prix d'un billet de train [Paris](from)-[Londres](to)
+    - Durée du vol [Marseille](from)-[Istanbul](to)
+    - Navette aéroport vers le centre de [Lisbonne](destination)
+    - Est-ce que [Bangkok](destination) a un métro ?
+    - Où prendre un ferry pour [Santorini](destination) ?
+
+- intent: budget_voyage
+  examples: |
+    - Coût moyen d'un repas à [Tokyo](destination) ?
+    - Voyage low-cost en [Thaïlande](destination), possible ?
+    - Prix d'une excursion aux [Chutes du Niagara](destination)
+    - Quel budget pour un mois en [Amérique du Sud](destination) ?
+    - Hôtel 4 étoiles à [New York](destination), ça coûte combien ?
+    - Quel budget pour [Paris](destination) ?
+    - Coût d'un voyage en [Thaïlande](destination)
+    - Prix moyen à [New York](destination)
+    - Je veux dépenser moins de [500€](budget)
+    - Mon budget est de [1000 USD](budget)
+    - Budget max : [1500 euros](budget)
+    - Je peux mettre [800$](budget) max
+    - Environ [2000 CHF](budget)
+
+
+- intent: voyages_thematiques
+  examples: |
+    - Voyage de noces : où aller pour être tranquille ?
+    - Destination pour faire de la plongée ?
+    - Road trip aux [USA](destination), quel itinéraire ?
+    - Où faire un safari photo ?
+    - Voyage spirituel en [Inde](destination) ?
+    - Tour du monde en [1 an](duree), par où commencer ?
+    - Où partir pour des vacances [gastronomiques](theme) ?
+    - Destination [éco-responsable](theme) en Europe ?
+    - Voyage [rando](theme) dans les Alpes ?
+    - Lieux pour [surf](theme) débutants ?
+    - Circuit [vignobles](theme) en France ?
+    - Séjour [yoga](theme) à [Bali](destination) ?
+    
+- intent: questions_urgences
+  examples: |
+    - Numéro des urgences à [Mexico](destination) ?
+    - Que faire si je perds mon passeport à [l'étranger](destination) ?
+    - Ambassade française à [Bangkok](destination) ?
+    - Assurance voyage, ça couvre quoi ?
+    - Hôpital francophone à [New York](destination) ?
+    - Pharmacie de garde à [Bali](destination) ?
+    - Que faire en cas de vol à [Barcelone](destination) ?
+    - Contact consulat à [Tokyo](destination) ?
+    - Urgences dentaires en [Grèce](destination) ?
+    - Assistance médicale pour [allergies](theme) à [Dubai](destination) ?
+    - Où déclarer un vol à [Rome](destination) ?
+    - Centre anti-poison à [Marrakech](destination) ?
+
+- intent: avis_recommandations
+  examples: |
+    - Me conseillez-vous un guide local à [Kyoto](destination) ?
+    - Avis sur la compagnie [Air France](compagnie) ?
+    - Quel site pour lire des reviews d'hôtels ?
+    - Restaurant authentique à [Rome](destination) ?
+    - Excursion à éviter à [Marrakech](destination) ?
+    - Hôtel familial recommandé à [Lisbonne](destination) ?
+    - Avis sur [Ryanair](compagnie) pour les vols long-courriers ?
+    - Où manger des spécialités locales à [Bangkok](destination) ?
+    - Agence de voyage fiable pour [l'Islande](destination) ?
+    - Excursions sûres à [Rio](destination) ?
+    - Avis sur les trains [SNCF](compagnie) ?
+    - Quartier calme pour dormir à [New York](destination) ?
+- intent: restrictions_voyage
+  examples: |
+    - Quelles sont les restrictions COVID pour [le Japon](destination) ?
+    - Puis-je voyager avec mon chien en [cabine](theme) ?
+    - Formalités pour un mineur voyageant seul ?
+    - Vaccins obligatoires pour [l'Afrique du Sud](destination) ?
+    - Faut-il un visa pour [la Chine](destination) ?
+    - Restrictions sanitaires à [Hawaï](destination) ?
+    - Puis-je amener des médicaments en [Thaïlande](destination) ?
+    - Quarantaine obligatoire pour [l'Australie](destination) ?
+    - Documents nécessaires pour [les USA](destination) ?
+    - Y a-t-il des interdictions alimentaires à [Dubai](destination) ?
+    - Puis-je voyager enceinte vers [le Mexique](destination) ?
+    - Restrictions pour les drones à [Maroc](destination) ?
