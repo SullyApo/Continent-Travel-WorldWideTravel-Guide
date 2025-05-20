@@ -1,0 +1,41 @@
+📁 tests/test_chat.py
+
+import pytest
+from services.api.chat import send_message_to_backend, get_chat_history
+from models.chat import ChatSession, ChatMessage
+from datetime import datetime
+
+@pytest.fixture
+def mock_chat_session():
+    return ChatSession(
+        id="session123",
+        user_id="user123",
+        created_at=datetime.now(),
+        messages=[
+            ChatMessage(
+                id="msg1",
+                content="Bonjour",
+                sender="user",
+                timestamp=datetime.now()
+            )
+        ]
+    )
+
+def test_send_message_to_backend(requests_mock, mock_chat_session):
+    requests_mock.post(
+        "http://localhost:8000/api/chat",
+        json={"response": "Bonjour à vous !"}
+    )
+    
+    response = send_message_to_backend("Bonjour")
+    assert response == "Bonjour à vous !"
+
+def test_get_chat_history(requests_mock, mock_chat_session):
+    requests_mock.get(
+        "http://localhost:8000/api/chat/history",
+        json=mock_chat_session.to_dict()
+    )
+    
+    session = get_chat_history("user123")
+    assert session.id == "session123"
+    assert len(session.messages) == 1

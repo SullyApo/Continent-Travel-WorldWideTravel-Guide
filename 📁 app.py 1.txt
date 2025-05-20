@@ -1,0 +1,41 @@
+📁 app.py
+
+import streamlit as st
+from components.sidebar import sidebar
+from components.auth.login import show_login
+from components.auth.register import show_register
+from components.chat.message import chat_interface
+import os
+from services.utils.session import init_session_state
+
+# Configuration de la page
+st.set_page_config(
+    page_title="Chatbot de Voyage",
+    page_icon="✈️",
+    layout="wide"
+)
+
+# Appliquer le CSS personnalisé
+def load_css():
+    with open(os.path.join("assets", "styles", "style.css")) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+def main():
+    load_css()
+    init_session_state()
+    
+    # Afficher la barre latérale
+    sidebar()
+    
+    # Logique de navigation principale
+    if not st.session_state.get('authenticated'):
+        tab1, tab2 = st.tabs(["Connexion", "Inscription"])
+        with tab1:
+            show_login()
+        with tab2:
+            show_register()
+    else:
+        chat_interface()
+
+if __name__ == "__main__":
+    main()
