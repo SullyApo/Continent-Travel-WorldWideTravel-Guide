@@ -1,0 +1,39 @@
+📁 models/chat.py
+
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Dict
+
+@dataclass
+class ChatMessage:
+    id: str
+    content: str
+    sender: str  # 'user' ou 'bot'
+    timestamp: datetime
+    metadata: Dict = None
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "sender": self.sender,
+            "timestamp": self.timestamp.isoformat(),
+            "metadata": self.metadata or {}
+        }
+
+@dataclass
+class ChatSession:
+    id: str
+    user_id: str
+    created_at: datetime
+    messages: List[ChatMessage]
+    title: str = None
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "created_at": self.created_at.isoformat(),
+            "messages": [msg.to_dict() for msg in self.messages]
+        }
