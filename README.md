@@ -6,7 +6,7 @@ Le site web permet à l'utilisateur de trouver une solution rapide pour voyager 
 
 Pour s'y faire, l'IA choisit les 10 meilleurs options de voyages en vu des éléments que l'utilisateur va taper dans la barre de recherche et de la précision de ces éléments.
 
-rq: pour plus de précision, l'IA pourra toujours demander plus d'informations pour affiner la recherche de l'utilisateur. L'IA propose ainsi des critères sur lesquels elle se base pour trouver les options.
+remarque: pour plus de précision, l'IA pourra toujours demander plus d'informations pour affiner la recherche de l'utilisateur. L'IA propose ainsi des critères sur lesquels elle se base pour trouver les options.
 
 Critères : 
 - Type de logement (complexe hôtelier, camping...)
