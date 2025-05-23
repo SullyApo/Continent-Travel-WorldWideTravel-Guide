@@ -25,3 +25,4 @@ La planification avancée du voyage qui elle même, se divise en deux parties.
 Tout d'abord, on propose une option pour organiser l'arriver à la destination avec les meilleurs taxis, les ATM dispo, carte SIM et toutes les adresses importantes pour que le voyages commence bien et ensuite si demandé, un itinéraire proposé avec les meilleurs sites à visiter et commerces pour supporter les business locaux.
 
 Ceci résume dans les grandes lignes en quoi consiste notre projet et c'est à nous de le mettre en place.
+PS: notre code est séparé en deux branches (backend et frontend).
