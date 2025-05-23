@@ -1,0 +1,176 @@
+import streamlit as st
+from datetime import datetime
+
+# --- Configuration de la page ---
+st.set_page_config(
+    page_title="Chatbot de Voyage",
+    page_icon="🌍",
+    layout="centered",
+    initial_sidebar_state="expanded"
+)
+
+# --- CSS personnalisé ---
+def set_custom_style():
+    st.markdown(
+        """
+        <style>
+        /* ARRIÈRE-PLAN PLEIN ÉCRAN */
+        .stApp {
+            background: url("https://www.60millions-mag.com/sites/default/files/styles/ratio_2_3_1/public/istock-996422284.jpg?itok=yKirNXE1&c=ebab08153ecfeabd1b55a76b2c152a28") no-repeat center center fixed;
+            background-size: cover ;
+            min-height: 130vh;
+        }
+        
+        /* SUPERPOSITION SOMBRE */
+        .stApp::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(2, 0, 0, 0.4);
+            z-index: 0;
+        }
+        
+        /* CONTENEUR PRINCIPAL - CENTRÉ */
+        .main .block-container {
+            max-width: 700px !important;
+            padding: 1rem 2rem 6rem 5rem !important;
+            margin: 10 auto !important;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* CHAMP DE SAISIE DU CHAT */
+        .stChatInput {
+            position: fixed;
+            bottom: 1rem;
+            left: 53%;
+            transform: translateX(-50%);
+            width: 100% !important;
+            max-width: 800px !important;
+            background-color: rgba(250, 250, 250, 0.95);
+            border-radius: 0px;
+            margin: 0 !important;
+            padding: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-top: 1px solid #f0f0f0 !important;
+            z-index: 100;
+        }
+        
+        /* MESSAGE DE CHAT */
+        .stChatMessage {
+            max-width: 90% !important;
+            margin: 8px auto !important;
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+        }
+        
+        /* CONTENU CENTRÉ */
+            h1, h2, h3, .stMarkdown p, .stMarkdown div {
+            color: white !important;
+            position: relative;
+            z-index: 2;
+            text-align: center !important;
+        }
+        
+        /* BARRE LATÉRALE DE STOCKAGE */
+        [data-testid="stSidebar"] {
+            background-color: rgba(250,250,250, 0.2) !important;
+            padding: 1rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_custom_style()
+
+# --- Barre latérale de stockage des chats ---
+with st.sidebar:
+    st.header("📁 Historique des conversations")
+    
+    # Créer une nouvelle conversation
+    if st.button("🆕 Nouvelle conversation"):
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Bonjour ! Comment puis-je vous aider pour votre voyage aujourd'hui ?"}
+        ]
+        st.rerun()
+    
+    # Liste des conversations sauvegardées
+    if "saved_chats" in st.session_state:
+        st.subheader("Conversations précédentes")
+        for i, chat in enumerate(st.session_state.saved_chats):
+            if st.button(f"{chat['name']} - {chat['date']}"):
+                st.session_state.messages = chat["messages"]
+                st.rerun()
+
+# --- Partie principale de l'application ---
+st.title("🌍 Chatbot GPT Voyage")
+st.markdown("""
+    <div style="text-align: center; font-size: 17px; margin-bottom: 1.5rem;">
+        Bonjour ! Je suis votre assistant de voyage virtuel.
+    </div>
+""", unsafe_allow_html=True)
+
+# --- Historique des messages ---
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Comment puis-je vous aider pour votre voyage aujourd'hui ?"}
+    ]
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(f'<div style="text-align: center;">{message["content"]}</div>', unsafe_allow_html=True)
+
+# --- Traitement de l'entrée ---
+if prompt := st.chat_input("Posez votre question sur le voyage..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(f'<div style="text-align: center;">{prompt}</div>', unsafe_allow_html=True)
+    
+    # Réponse exemple
+    if "hanoi" in prompt.lower() or "hà nội" in prompt.lower():
+        response = """
+        <div style="text-align: center;">
+            <strong>Hanoï - Capitale millénaire</strong><br>
+            • 🏛️ Lieux : Lac de l'Épée, Quartier ancien, Temple de la Littérature<br>
+            • 🍜 Gastronomie : Pho, Bun cha, Banh cuon<br>
+            • 🌸 Meilleure saison : Automne (septembre-novembre)
+        </div>
+        """
+    elif "danang" in prompt.lower() or "đà nẵng" in prompt.lower():
+        response = """
+        <div style="text-align: center;">
+            <strong>Đà Nẵng - Ville où il fait bon vivre</strong><br>
+            • 🏖️ Lieux : Montagnes de Bà Nà, Pont du Dragon<br>
+            • 🍽️ Gastronomie : Mi Quang, fruits de mer<br>
+            • 🏨 Resorts : Nombreux hôtels 5 étoiles
+        </div>
+        """
+    else:
+        response = f"""
+        <div style="text-align: center;">
+            <strong>J'ai bien reçu votre demande concernant {prompt}</strong><br>
+            🔍 Je recherche les informations...<br>
+            💡 Souhaitez-vous des conseils sur les hôtels, la gastronomie ou les sites touristiques ?
+        </div>
+        """
+    
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    with st.chat_message("assistant"):
+        st.markdown(response, unsafe_allow_html=True)
+
+    # Sauvegarder la conversation
+    if "saved_chats" not in st.session_state:
+        st.session_state.saved_chats = []
+    
+    if len(st.session_state.messages) > 2:  # Ne sauvegarder que s'il y a du contenu
+        chat_data = {
+            "name": f"Conversation {len(st.session_state.saved_chats)+1}",
+            "date": datetime.now().strftime("%d/%m %H:%M"),
+            "messages": st.session_state.messages.copy()
+        }
+        st.session_state.saved_chats.append(chat_data)
