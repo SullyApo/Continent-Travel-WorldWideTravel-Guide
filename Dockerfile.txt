@@ -1,0 +1,61 @@
+# Étape 1 : Builder - Construction des dépendances
+FROM python:3.9-slim as builder
+
+WORKDIR /app
+
+# Installation sécurisée des dépendances système
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configuration du cache pip
+ENV PIP_CACHE_DIR=/tmp/.cache/pip \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on
+
+# Installation des dépendances Python (couche séparée pour le cache)
+COPY requirements.txt .
+RUN pip install --user --no-warn-script-location -r requirements.txt
+
+# Étape 2 : Image finale minimale
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Variables d'environnement critiques
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/root/.local/bin:$PATH" \
+    PYTHONPATH=/app
+
+# Sécurité renforcée
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r appuser && useradd -r -g appuser appuser \
+    && chown -R appuser:appuser /app
+
+# Copie sélective depuis le builder
+COPY --from=builder --chown=appuser:appuser /root/.local /root/.local
+COPY --chown=appuser:appuser . .
+
+# Configuration santé et monitoring
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Port exposé (documentation seulement)
+EXPOSE 8000
+
+# Utilisateur non-root
+USER appuser
+
+# Commande optimisée pour la production
+CMD ["uvicorn", "main:app", \
+    "--host", "0.0.0.0", \
+    "--port", "8000", \
+    "--workers", "4", \
+    "--timeout-keep-alive", "60", \
+    "--no-access-log"]  # Désactive les logs d'accès pour les load balancers

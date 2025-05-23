@@ -1,0 +1,89 @@
+version: "3.1"
+
+stories:
+  # Histoires principales
+  - story: Recherche de voyage complète
+    steps:
+      - intent: chercher_voyage
+        entities:
+          - theme: "culturelles"
+      - action: recherche_voyage_form
+      - active_loop: recherche_voyage_form
+      - slot_was_set:
+          - theme: "culturelles"
+      - intent: affirm
+        entities:
+          - budget: "1000€"
+          - duree: "1 semaine"
+      - action: recherche_voyage_form
+      - active_loop: null
+      - action: action_proposer_destinations
+      - action: utter_proposer_destinations
+
+  - story: Demande d'informations spécifiques
+    steps:
+      - intent: demander_infos_destination
+        entities:
+          - destination: "Paris"
+          - duree: "3 jours"
+      - action: action_infos_destination
+      - action: utter_ask_follow_up
+      - intent: affirm
+      - action: action_infos_destination
+
+  - story: Comparaison de destinations
+    steps:
+      - intent: comparer_destinations
+        entities:
+          - destination1: "Sicile"
+          - destination2: "Sardaigne"
+      - action: action_comparer_destinations
+
+  - story: Recherche d'hébergement
+    steps:
+      - intent: rechercher_hebergement
+        entities:
+          - destination: "Dubai"
+          - theme: "piscine"
+          - nombre: "2"
+      - action: utter_confirmer_hebergement
+      - action: action_rechercher_hebergement
+
+  # Histoires thématiques
+  - story: Voyage avec budget limité
+    steps:
+      - intent: budget_voyage
+        entities:
+          - destination: "Thaïlande"
+          - budget: "800€"
+      - action: utter_ask_budget_details
+      - action: action_validate_budget
+      - action: action_proposer_destinations
+
+  - story: Urgence voyage
+    steps:
+      - intent: questions_urgences
+        entities:
+          - destination: "Mexico"
+      - action: action_gerer_urgences
+      - action: utter_confirmation_urgence
+
+  # Histoires de clarification
+  - story: Demande trop vague
+    steps:
+      - intent: chercher_voyage
+      - action: utter_ask_clarification
+      - intent: affirm
+        entities:
+          - theme: "plage"
+      - action: action_proposer_destinations
+
+  - story: Fallback et reprise
+    steps:
+      - intent: nlu_fallback
+      - action: action_fallback
+      - action: utter_ask_rephrase
+      - intent: chercher_voyage
+        entities:
+          - theme: "romantique"
+      - action: action_proposer_destinations

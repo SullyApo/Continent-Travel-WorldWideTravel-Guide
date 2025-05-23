@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  rasa:
+    build:
+      context: ./rasa
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./rasa/models:/app/models
+      - ./rasa/data:/app/data
+    environment:
+      - RASA_X_PASSWORD=${RASA_X_PASSWORD}
+      - RASA_TELEMETRY_ENABLED=false
+
+  actions:
+    build:
+      context: ./rasa
+      dockerfile: Dockerfile.actions  # Voir ci-dessous
+    ports:
+      - "5055:5055"
+    depends_on:
+      - rasa
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+volumes:
+  redis_data:

@@ -1,0 +1,118 @@
+version: "3.1"
+
+stories:
+- story: Test recherche de destinations basiques
+  steps:
+  - user: |
+      Je veux partir en vacances, des idées ?
+    intent: chercher_voyage
+  - action: action_proposer_destinations
+  - action: utter_proposer_destinations
+
+- story: Test recherche avec critères
+  steps:
+  - user: |
+      Je cherche une destination ensoleillée pour 1000€
+    intent: chercher_voyage
+    entities:
+    - theme: "ensoleillée"
+    - budget: "1000€"
+  - action: action_proposer_destinations
+  - action: utter_proposer_destinations
+
+- story: Test demande infos destination
+  steps:
+  - user: |
+      Que faire à Paris ?
+    intent: demander_infos_destination
+    entities:
+    - destination: "Paris"
+  - action: action_infos_destination
+  - action: utter_ask_follow_up
+
+- story: Test comparaison destinations
+  steps:
+  - user: |
+      Mieux entre Sicile et Sardaigne pour la plage ?
+    intent: comparer_destinations
+    entities:
+    - destination1: "Sicile"
+    - destination2: "Sardaigne"
+  - action: action_comparer_destinations
+
+- story: Test recherche hébergement
+  steps:
+  - user: |
+      Trouver un hôtel avec piscine à Dubai
+    intent: rechercher_hebergement
+    entities:
+    - destination: "Dubai"
+    - theme: "piscine"
+  - action: action_rechercher_hebergement
+  - action: utter_confirmer_hebergement
+
+- story: Test questions urgences
+  steps:
+  - user: |
+      Numéro des urgences à Mexico ?
+    intent: questions_urgences
+    entities:
+    - destination: "Mexico"
+  - action: action_gerer_urgences
+  - action: utter_confirmation_urgence
+
+- story: Test conseils pratiques
+  steps:
+  - user: |
+      Faut-il un adaptateur pour l'Australie ?
+    intent: demander_conseils_pratiques
+    entities:
+    - destination: "Australie"
+  - action: action_demander_conseils_pratiques
+  - action: utter_transports_disponibles
+
+- story: Test restrictions voyage
+  steps:
+  - user: |
+      Quelles sont les restrictions COVID pour le Japon ?
+    intent: restrictions_voyage
+    entities:
+    - destination: "Japon"
+    - theme: "COVID"
+  - action: action_verifier_restrictions
+  - action: utter_default
+
+- story: Test budget voyage
+  steps:
+  - user: |
+      Quel budget pour New York ?
+    intent: budget_voyage
+    entities:
+    - destination: "New York"
+  - action: utter_ask_budget_details
+  - action: action_proposer_destinations
+
+- story: Test voyages thématiques
+  steps:
+  - user: |
+      Où partir pour des vacances gastronomiques ?
+    intent: voyages_thematiques
+    entities:
+    - theme: "gastronomiques"
+  - action: action_proposer_destinations
+  - action: utter_proposer_destinations
+
+- story: Test fallback
+  steps:
+  - user: |
+      blablabla incompréhensible
+    intent: nlu_fallback
+  - action: action_fallback
+  - action: utter_ask_rephrase
+
+- story: Test clarification nécessaire
+  steps:
+  - user: |
+      Je veux voyager
+    intent: chercher_voyage 
+  - action: utter_ask_clarification

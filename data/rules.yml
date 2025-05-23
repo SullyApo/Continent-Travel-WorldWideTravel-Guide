@@ -1,0 +1,53 @@
+version: "3.1"
+
+rules:
+  # Règles pour les flux simples et déterministes
+  - rule: Activer la recherche de voyage
+    steps:
+      - intent: chercher_voyage
+      - action: recherche_voyage_form
+      - active_loop: recherche_voyage_form
+
+  - rule: Fournir des infos sur une destination
+    steps:
+      - intent: demander_infos_destination
+      - action: action_infos_destination
+      - action: utter_ask_follow_up
+
+  - rule: Comparaison de destinations
+    steps:
+      - intent: comparer_destinations
+      - action: action_comparer_destinations
+
+  - rule: Confirmation hébergement
+    steps:
+      - intent: rechercher_hebergement
+      - action: utter_confirmer_hebergement
+      - action: action_rechercher_hebergement
+
+  - rule: Gestion urgences
+    steps:
+      - intent: questions_urgences
+      - action: action_gerer_urgences
+      - action: utter_confirmation_urgence
+
+  - rule: Demande de budget
+    steps:
+      - intent: budget_voyage
+      - action: utter_ask_budget_details
+      - action: action_validate_budget
+
+  - rule: Fallback global
+    steps:
+      - intent: nlu_fallback
+      - action: action_fallback
+      - action: utter_ask_rephrase
+
+  - rule: Validation formulaire
+    condition:
+      - active_loop: recherche_voyage_form
+    steps:
+      - intent: affirm
+      - action: recherche_voyage_form
+      - active_loop: null
+      - action: action_proposer_destinations

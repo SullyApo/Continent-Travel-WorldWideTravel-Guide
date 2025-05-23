@@ -1,0 +1,68 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rasa Rules Schema 3.1",
+  "description": "Schema for Rasa rules.yml files",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["3.1"],
+      "description": "The version of the Rasa format"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "description": "Name of the rule"
+          },
+          "condition": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "intent": { "type": "string" },
+                "slot_was_set": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "intent": { "type": "string" },
+                    "confidence": { "type": "string" }
+                  },
+                  "required": ["intent"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "action": { "type": "string" }
+                  },
+                  "required": ["action"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "required": ["rule", "steps"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["version", "rules"],
+  "additionalProperties": false,
+  "$id": "https://rasa.com/schemas/rules-3.1.schema.json"
+}

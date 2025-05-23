@@ -1,0 +1,27 @@
+# rasa/Dockerfile
+# Étape 1 : Image de base officielle RASA
+FROM rasa/rasa:3.6.0
+
+# Étape 2 : Configuration de l'environnement
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 \
+    PORT=5005 \
+    RASA_ACTIONS_URL=http://actions:5055/webhook
+
+# Étape 3 : Copie sélective des fichiers
+COPY . .
+RUN rm -rf .github .git .vscode  # Suppression des fichiers de développement
+
+# Étape 4 : Installation des dépendances custom
+RUN pip install --no-cache-dir -r requirements.txt && \
+    python -m spacy download fr_core_news_md && \
+    rasa train --quiet  # Entraînement initial
+
+# Étape 5 : Sécurité
+USER 1001  # Utilisateur non-root
+
+# Étape 6 : Points de montage critiques
+VOLUME ["/app/models", "/app/data"]
+
+# Étape 7 : Commande optimisée pour la production
+CMD ["run", "--enable-api", "--cors", "*", "--debug", "--endpoints", "endpoints.yml"]

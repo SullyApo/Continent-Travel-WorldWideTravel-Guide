@@ -1,0 +1,196 @@
+version: "3.1"
+
+intents:
+  - affirm
+  - chercher_voyage
+  - demander_infos_destination
+  - comparer_destinations
+  - demander_conseils_pratiques
+  - rechercher_hebergement
+  - demander_transports
+  - budget_voyage
+  - voyages_thematiques
+  - questions_urgences
+  - avis_recommandations
+  - restrictions_voyage
+  - nlu_fallback
+
+entities:
+  - date
+  - saison
+  - duree
+  - destination
+  - destination1
+  - destination2
+  - nombre
+  - devise
+  - service
+  - compagnie
+  - theme
+  - from
+  - to
+  - budget
+
+slots:
+  destination:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: destination
+    influence_conversation: true
+    
+  destination1:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: destination1
+
+  destination2:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: destination2
+
+  date:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: date
+    influence_conversation: true
+
+  duree:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: duree
+    influence_conversation: true
+
+  theme:
+    type: categorical
+    values:
+      - ensoleillée
+      - détente
+      - culturelles
+      - exotique
+      - romantique
+      - famille
+      - gastronomiques
+      - éco-responsable
+      - rando
+      - surf
+      - vignobles
+      - yoga
+      - COVID
+    mappings:
+      - type: from_entity
+        entity: theme
+    influence_conversation: true
+
+  budget:
+    type: float
+    mappings:
+      - type: from_entity
+        entity: budget
+    influence_conversation: true
+    min_value: 0
+    max_value: 100000
+
+  nombre:
+    type: float
+    mappings:
+      - type: from_entity
+        entity: nombre
+    min_value: 1
+    max_value: 20
+
+  devise:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: devise
+
+  derniere_recherche:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: derniere_recherche
+
+responses:
+  utter_proposer_destinations:
+    - text: "Je te recommande {destinations}. Budget {budget} ? Durée {duree} ?"
+    - text: "Voici quelques idées : {destinations}. Avez-vous un budget ou une durée précise en tête ?"
+    - text: "Pour un voyage {theme}, je suggère {destinations}. Quel est votre budget approximatif ?"
+
+  utter_demander_details:
+    - text: "Pour quelle date envisagez-vous ce voyage ?"
+    - text: "Sur quelle période souhaitez-vous partir ?"
+    - text: "Quand voulez-vous voyager ?"
+
+  utter_confirmer_hebergement:
+    - text: "Je cherche des hébergements à {destination} pour {nombre} personnes. Un instant..."
+    - text: "Recherche en cours pour {nombre} personnes à {destination}..."
+    - text: "Je consulte nos options d'hébergement à {destination}..."
+
+  utter_transports_disponibles:
+    - text: "Voici les options de transport pour {destination} : {transports}"
+    - text: "Pour vous rendre à {destination}, vous avez ces possibilités : {transports}"
+
+  utter_default:
+    - text: "Je n'ai pas compris, pouvez-vous reformuler ?"
+    - text: "Je ne suis pas sûr de comprendre. Pouvez-vous préciser ?"
+
+  utter_ask_rephrase:
+    - text: "Pouvez-vous reformuler votre demande ?"
+    - text: "Je n'ai pas saisi. Pourriez-vous dire autrement ?"
+
+  utter_confirmation_urgence:
+    - text: "Voici les informations d'urgence pour {destination}: {infos_urgences}"
+    - text: "Informations urgentes pour {destination} : {infos_urgences}"
+
+  utter_ask_follow_up:
+    - text: "Souhaitez-vous d'autres informations sur {destination} ?"
+    - text: "Puis-je vous aider avec autre chose concernant {destination} ?"
+
+  utter_ask_budget_details:
+    - text: "Quel est votre budget approximatif pour ce voyage ?"
+    - text: "Avez-vous une fourchette budgétaire en tête ?"
+
+  utter_ask_clarification:
+    - text: "Pouvez-vous préciser votre demande ? Je n'ai pas bien compris."
+    - text: "Voulez-vous parler de destinations, d'hébergements, ou d'autre chose ?"
+    - text: "Je ne suis pas sûr de ce que vous cherchez. Pouvez-vous préciser ?"
+
+  utter_validation_budget:
+    - text: "Le budget doit être un nombre avec devise (ex: 500€, 1000 USD)."
+    - text: "Format invalide. Merci d'indiquer un montant avec devise (ex: 800$)."
+
+actions:
+  - action_proposer_destinations
+  - action_rechercher_hebergement
+  - action_infos_destination
+  - action_comparer_destinations
+  - action_verifier_restrictions
+  - action_gerer_urgences
+  - action_demander_conseils_pratiques
+  - action_validate_budget
+  - action_fallback
+  - action_save_conversation
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+forms:
+  recherche_voyage_form:
+    required_slots:
+      - destination
+      - date
+      - budget
+      - theme
+
+synonyms:
+  vacances: ["voyage", "séjour", "escapade", "congés"]
+  euros: ["€", "euro"]
+  dollars: ["$", "USD"]
+  New York: ["NY", "NYC", "Big Apple"]
+  Paris: ["PAR", "ville lumière"]
