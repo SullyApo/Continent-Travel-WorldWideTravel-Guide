@@ -1,0 +1,39 @@
+📁 services/api/auth.py
+
+import requests
+import os
+from dotenv import load_dotenv
+from models.user import User
+
+load_dotenv()
+BACKEND_API_URL = os.getenv("BACKEND_API_URL")
+
+def authenticate_user(email: str, password: str) -> dict:
+    try:
+        response = requests.post(
+            f"{BACKEND_API_URL}/api/auth/login",
+            json={"email": email, "password": password}
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        if data.get("success"):
+            user = User.from_dict(data["user"])
+            return {
+                "success": True,
+                "user": user.to_dict()
+            }
+        return {"success": False, "message": data.get("message", "Échec de la connexion")}
+    except requests.exceptions.RequestException as e:
+        return {"success": False, "message": f"Erreur de connexion : {str(e)}"}
+
+def register_user(name: str, email: str, password: str) -> dict:
+    try:
+        response = requests.post(
+            f"{BACKEND_API_URL}/api/auth/register",
+            json={"name": name, "email": email, "password": password}
+        )
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return {"success": False, "message": f"Erreur de connexion : {str(e)}"}

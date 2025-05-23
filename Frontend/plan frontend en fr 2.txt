@@ -1,0 +1,36 @@
+ravel-chatbot/
+├── .env                      # Variables d'environnement
+├── app.py                    # Application principale
+├── assets/
+│   ├── styles/            
+│   └── images/
+│	     ├──logo.png          # Logo de l'application
+│    	 ├── bot_avatar.png   # Avatar du chatbot
+│        └── bg_pattern.png   # Fond d'écran (optionnel)	              
+├── components/
+│   ├── auth/                 # Authentification
+│   │   ├── login.py
+│   │   ├── register.py
+│   │   └── password_reset.py
+│   ├── chat/                 # Interface de chat
+│   │   ├── message.py
+│   │   ├── history.py
+│   │   └── suggestions.py
+│   └── sidebar.py            # Barre latérale
+├── models/
+│   ├── user.py               # Modèle utilisateur
+│   └── chat.py               # Modèle de chat
+├── services/
+│   ├── api/                  # Connexion backend
+│   │   ├── auth.py
+│   │   ├── chat.py
+│   ├── database/             # Base de données locale (si nécessaire)
+│   │   ├── user_db.py
+│   │   └── chat_db.py
+│   └── utils/
+│       ├── session.py
+│       └── validator.py
+├── tests/                    # Tests
+│   ├── test_auth.py
+│   └── test_chat.py
+└── requirements.txt          # Bibliothèques

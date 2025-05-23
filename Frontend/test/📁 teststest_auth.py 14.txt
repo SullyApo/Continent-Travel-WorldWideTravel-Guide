@@ -1,0 +1,46 @@
+📁 tests/test_auth.py
+
+import pytest
+from services.api.auth import authenticate_user, register_user
+from services.database.user_db import UserDB
+from models.user import User
+
+@pytest.fixture
+def mock_user():
+    return User(
+        id="test123",
+        name="Test User",
+        email="test@example.com",
+        created_at="2023-01-01T00:00:00",
+        last_login="2023-01-01T00:00:00"
+    )
+
+def test_authenticate_user_success(requests_mock, mock_user):
+    requests_mock.post(
+        "http://localhost:8000/api/auth/login",
+        json={"success": True, "user": mock_user.to_dict()}
+    )
+    
+    result = authenticate_user("test@example.com", "password123")
+    assert result["success"] is True
+    assert result["user"]["email"] == "test@example.com"
+
+def test_authenticate_user_failure(requests_mock):
+    requests_mock.post(
+        "http://localhost:8000/api/auth/login",
+        json={"success": False, "message": "Identifiants invalides"},
+        status_code=401
+    )
+    
+    result = authenticate_user("wrong@example.com", "wrongpass")
+    assert result["success"] is False
+    assert "Identifiants invalides" in result["message"]
+
+def test_register_user_success(requests_mock):
+    requests_mock.post(
+        "http://localhost:8000/api/auth/register",
+        json={"success": True, "message": "Utilisateur enregistré"}
+    )
+    
+    result = register_user("New User", "new@example.com", "password123")
+    assert result["success"] is True
