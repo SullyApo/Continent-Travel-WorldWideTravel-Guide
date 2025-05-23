@@ -1,0 +1,19 @@
+mon_bot_rasa/  # Nom à garder (plus explicite que "rasa project")
+├── actions/
+│   ├── actions.py       # Toutes les custom actions
+│   └── __init__.py     # Nécessaire pour les imports Python
+├── data/
+│   ├── nlu.yml         # Exemples d'intentions annotés
+│   ├── stories.yml     # Flux de conversation
+│   ├── rules.yml       # Règles métier (prioritaires sur les stories)
+│   └── tests/          # Nouveau : tests conversationnels
+│       └── test_stories.yml
+├── schemas/            # Ajout crucial
+│   ├── rules-3.1.schema.json  # Validation des règles
+│   └── domain.schema.json     # Validation du domaine
+├── config.yml          # Configuration du pipeline NLU
+├── domain.yml          # Définition du domaine (intents, responses, slots)
+├── endpoints.yml       # Configuration des webhooks
+├── credentials.yml     # Ajout recommandé (connexions externes)
+└── .vscode/           # Configuration IDE
+    └── settings.json  # Associe les schémas aux fichiers

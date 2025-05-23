@@ -1,0 +1,179 @@
+### 📁 Première version de Backend
+
+from fastapi import FastAPI
+from app.api import chat, auth
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
+from app.core import security  # ✅ utilisé pour l'authentification
+from app.db import models  # ✅ s'assurer que les modèles sont bien déclarés
+from app.db.database import init_db
+from app.services import chat as chat_service, rasa  # ✅ précharger les services
+from app.utils import logging as log_utils, helpers  # ✅ utilitaires pour la journalisation et la vérification des données
+
+app = FastAPI(title="Chatbot API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(chat.router, prefix="/chat", tags=["Chat"])
+
+@app.on_event("startup")
+async def startup():
+    await init_db()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+
+
+### 📁 app/api/chat.py
+from fastapi import APIRouter
+from app.services.chat import get_chat_response
+
+router = APIRouter()
+
+@router.post("/")
+async def chat(message: dict):
+    response = await get_chat_response(message["message"])
+    return {"response": response}
+
+
+### 📁 app/api/auth.py
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.post("/login")
+def login():
+    return {"msg": "Login success (fake)"}
+
+
+### 📁 app/core/config.py
+class Settings:
+    DB_URL: str = "sqlite+aiosqlite:///./chatbot.db"
+    SECRET_KEY: str = "super-secret-key"
+    ALGORITHM: str = "HS256"
+    RASA_URL: str = "http://localhost:5005/webhooks/rest/webhook"  # URL của server RASA
+
+settings = Settings()
+
+
+### 📁 app/core/security.py
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from app.core.config import settings
+
+# Fonction pour créer un jeton d'accès
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+# Fonction pour vérifier un jeton
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
+
+### 📁 app/db/database.py
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
+from app.db import models
+
+engine = create_async_engine(settings.DB_URL, echo=True)
+SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(models.Base.metadata.create_all)
+
+
+### 📁 app/db/models.py
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
+
+Base = declarative_base()
+
+class ChatHistory(Base):
+    __tablename__ = "chat_history"
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(String)
+    answer = Column(String)
+
+
+### 📁 app/services/chat.py
+from app.services.rasa import send_to_rasa
+
+async def get_chat_response(message: str) -> str:
+    response = await send_to_rasa(message)
+    return response
+
+
+### 📁 app/services/rasa.py
+import httpx
+from app.core.config import settings
+
+async def send_to_rasa(message: str) -> str:
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                settings.RASA_URL,
+                json={"sender": "user", "message": message},
+                timeout=5.0
+            )
+            response.raise_for_status()
+            data = response.json()
+            if data and isinstance(data, list):
+                return " ".join([d.get("text", "") for d in data])
+            return "RASA did not return a response."
+        except httpx.RequestError as e:
+            return f"Request to RASA failed: {e}"
+
+
+### 📁 app/utils/logging.py
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+### 📁 app/utils/helpers.py
+
+# Fonction utilitaire par exemple : vérifier les données d'entrée
+def is_valid_message(message: str) -> bool:
+    return bool(message and isinstance(message, str) and message.strip())
+
+
+### 📁 requirements.txt
+fastapi
+uvicorn
+sqlalchemy
+aiosqlite
+httpx
+python-jose
+
+
+### 📁 tests/test_api.py
+def test_dummy():
+    assert 1 + 1 == 2
+
+
+### 📁 tests/test_services.py
+def test_service():
+    from app.services.chat import get_chat_response
+    import asyncio
+    result = asyncio.run(get_chat_response("Hello"))
+    assert isinstance(result, str)

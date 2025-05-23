@@ -1,0 +1,27 @@
+travel-project/
+│
+├── backend/                  # Backend (API et services)
+│   ├── .env                  # Configuration d'environnement
+│   ├── main.py               # Point d'entrée principal
+│   ├── app/                  # Application backend
+│   │   ├── api/              # Endpoints API (chat, auth, destinations, etc.)
+│   │   ├── core/             # Configuration et sécurité
+│   │   ├── db/               # Base de données (modèles et repositories)
+│   │   ├── services/         # Services métier et externes
+│   │   └── utils/            # Utilitaires
+│   ├── requirements.txt      # Dépendances Python
+│   └── tests/                # Tests backend
+│
+├── frontend/                 # Frontend (interface utilisateur)
+│   ├── .env                  # Variables d'environnement
+│   ├── app.py                # Application principale
+│   ├── assets/               # Ressources statiques (images, styles)
+│   ├── components/           # Composants UI (auth, chat, sidebar)
+│   ├── models/               # Modèles frontend
+│   ├── services/             # Connexion API et utilitaires
+│   ├── requirements.txt      # Dépendances frontend
+│   └── tests/                # Tests frontend
+│
+├── docs/                     # Documentation du projet (optionnel)
+├── docker-compose.yml        # Configuration Docker (optionnel)
+└── README.md                 # Description du projet
